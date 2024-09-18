@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id_user      String      @id @default(uuid())
+  name    String    @unique
+  username String
+  password String
+  role  Role @default(ADMIN)
+
+  transaksi transaksi[]
+  @@map("User")
+}
+
+model meja {
+  id_meja      String     @id @default(uuid())
+  nomor_meja    String @unique
+
+  transaksi transaksi[]
+  @@map("Meja")
+}
+
+model menu {
+  id_menu String @id @default(uuid())
+  nama_menu String @unique
+  jenis Jenis
+  deskripsi String
+  gambar String
+  harga Int
+
+  detail_transaksi detail_transaksi[]
+  @@map("Menu")
+}
+
+model transaksi {
+  id_transaksi      String      @id @default(uuid())
+  tgl_transaksi   DateTime @default(now())
+  id_user String
+  id_meja String
+  nama_pelanggan String @unique
+  status Status @default(BELUM_BAYAR)
+
+  details detail_transaksi[]
+  transaksiBy user  @relation(fields: [id_user], references: [id_user])
+  meja meja @relation(fields: [id_meja],references: [id_meja])
+  @@map("Transaksi")
+}
+
+model detail_transaksi{
+  id_detail_transaksi String @id @default(uuid())
+  id_transaksi String
+  id_menu String
+  harga Int
+
+  transaksi transaksi @relation(fields: [id_transaksi],references: [id_transaksi])
+  menu menu @relation(fields: [id_menu],references: [id_menu])
+  @@map("Detail Transaksi")
+}
+
+enum Role{
+  ADMIN
+  KASIR
+  MANAJER
+}
+
+enum Status{
+  BELUM_BAYAR
+  LUNAS
+}
+
+enum Jenis{
+  MAKANAN
+  MINUMAN
+}
