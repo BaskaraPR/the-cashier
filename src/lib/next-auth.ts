@@ -65,7 +65,7 @@ export const authOptions: AuthOptions = {
           if (!isPasswordCorrect) return null;
 
           const userPayload = {
-            id_user: user.id_user,
+            id: user.id_user,
             role: user.role,
             name: user.name,
             username: user.username,

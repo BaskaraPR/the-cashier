@@ -1,6 +1,5 @@
 import Link from "@/app/_components/global/button";
 import { getServerSession } from "@/lib/next-auth";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import { FaArrowLeft } from "react-icons/fa6";
 import LoginForm from "./_components/form";

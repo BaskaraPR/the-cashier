@@ -1,5 +1,5 @@
 import { z } from "zod";
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
+export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
 const MAX_FILE_SIZE = 5_000_000;
 
 export const createMenuFormSchema = z.object({
@@ -18,8 +18,8 @@ export const createMenuFormSchema = z.object({
     .refine((files: FileList) => {
       const file = files[0];
       return ACCEPTED_IMAGE_TYPES.includes(file?.type);
-    }, "File harus menggunakan ekstensi .jpg, .jpeg, .png."),
-  harga: z.number().min(1, { message: "Harga harus diisi!" }),
+    }, "File harus menggunakan ekstensi .jpeg, .png."),
+  harga: z.string().min(1, { message: "Harga harus diisi!" }),
 });
 
 export const updateMenuFormSchema = z.object({
@@ -39,5 +39,5 @@ export const updateMenuFormSchema = z.object({
       const file = files[0];
       return ACCEPTED_IMAGE_TYPES.includes(file?.type);
     }, "File harus menggunakan ekstensi .jpg, .jpeg, .png."),
-  harga: z.number().min(1, { message: "Harga harus diisi!" }),
+  harga: z.string().min(1, { message: "Harga harus diisi!" }),
 });

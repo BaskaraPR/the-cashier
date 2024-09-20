@@ -26,13 +26,7 @@ export default function Navbar({ session }: { session: Session | null }) {
     <nav className="fixed z-[999] mx-auto flex w-full flex-col lg:hidden xl:relative">
       <div className="z-[999] flex w-full justify-between bg-white px-5 py-4 xl:max-w-[1192px] xl:bg-transparent xl:py-0">
         <Link href={"/"} className="block xl:mt-8">
-          <Image
-            src={"/horizontal.svg"}
-            alt="Logo moklet.org"
-            width={120}
-            height={50}
-            className="pointer-events-none h-[50px] w-[130px]"
-          />
+          Home
         </Link>
         <button
           className="block xl:hidden"
@@ -70,7 +64,7 @@ export default function Navbar({ session }: { session: Session | null }) {
                     "group flex items-center rounded-lg p-2 text-base font-normal text-primary-400 transition-all hover:bg-red-200"
                   }
                 >
-                  <div/>
+                  <div />
                   <P className="ml-3 whitespace-nowrap font-semibold text-primary-400">
                     {item.title}
                   </P>

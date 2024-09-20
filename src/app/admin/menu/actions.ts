@@ -10,7 +10,10 @@ import { getServerSession } from "@/lib/next-auth";
 import { ServerActionResponse } from "@/types/action";
 import { Jenis, Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { uploadImage} from "@/app/global-action/fileUpload";
+import {
+  handleImageUpload,
+  handleImageDelete,
+} from "@/app/global-action/fileUpload";
 
 export async function upsertMenu(
   id_menu: string | undefined | null,
@@ -18,12 +21,10 @@ export async function upsertMenu(
 ): Promise<ServerActionResponse> {
   const data = {
     nama_menu: actionData.get("nama_menu") as string,
-    jenis: actionData.get("jenis") as Jenis | undefined,
-    deskripsi: actionData.get("deskripsi") as string | undefined,
-    gambar: actionData.get("gambar") as File | undefined,
-    harga: actionData.get("harga") ? parseInt(actionData.get("harga") as string, 10) : undefined,
+    jenis: actionData.get("jenis") as Jenis,
+    deskripsi: actionData.get("deskripsi") as string,
+    harga: Number(actionData.get("harga")),
   };
-
   try {
     const session = await getServerSession();
     const currentUserRole = session?.user?.role;
@@ -31,41 +32,48 @@ export async function upsertMenu(
     if (currentUserRole !== "ADMIN")
       return { success: false, message: "Forbidden" };
 
-    let gambarUrl: string | undefined;
-
-    if (data.gambar) {
-      gambarUrl = await uploadImage(data.gambar);
-      if (gambarUrl === undefined) {
-        return { success: false, message: "Image upload failed" };
-      }
+    let namaGambar;
+    const gambar = actionData.get("gambar") as File;
+    if (gambar) {
+      namaGambar = await handleImageUpload(gambar);
     }
-
+    const payload: Prisma.menuUpdateInput = {
+      nama_menu: data.nama_menu,
+      jenis: data.jenis,
+      gambar: namaGambar,
+      deskripsi: data.deskripsi,
+      harga: data.harga,
+    };
 
     if (!id_menu) {
-      const { nama_menu, deskripsi, gambar  , jenis, harga } = data;
+      const { nama_menu, jenis, gambar, deskripsi, harga } = payload;
       if (!nama_menu || !deskripsi || !gambar || !jenis || !harga)
         return { success: false, message: "Bad request" };
 
-      const checkNameExistence = await findMenu({ nama_menu });
-      if (checkNameExistence) return { success: false, message: "Menu already exists" };
-
-      await createMenu({ nama_menu, deskripsi, gambar:gambarUrl, jenis, harga });
+      await createMenu(payload as Prisma.menuCreateInput);
 
       return { success: true, message: "Menu created successfully!" };
     }
 
     const menuToUpdate = await findMenu({ id_menu });
-    if (!menuToUpdate)
-      return { success: false, message: "Menu not found!" };
-
-    // Ensure that data is compatible with Prisma's expected input
-    await updateMenu({ id_menu }, {
-      nama_menu: data.nama_menu, // Make sure this matches the expected type
-      deskripsi: data.deskripsi,
-      gambar: data.gambar,
-      jenis: data.jenis,
-      harga: data.harga,
-    });
+    if (!menuToUpdate) return { success: false, message: "Menu not found!" };
+    let updatedGambar = menuToUpdate.gambar; // Keep existing image if no new one is uploaded
+    if (gambar) {
+      updatedGambar = await handleImageUpload(gambar);
+      if (menuToUpdate.gambar) {
+        await handleImageDelete(menuToUpdate.gambar); // Delete old image if a new one is uploaded
+      }
+    }
+    await updateMenu(
+      { id_menu },
+      {
+        nama_menu: data.nama_menu,
+        deskripsi: data.deskripsi,
+        gambar: updatedGambar,
+        jenis: data.jenis,
+        harga: data.harga,
+      }
+    );
 
     revalidatePath("/admin/menu");
     return { success: true, message: "Menu updated successfully!" };
@@ -75,7 +83,7 @@ export async function upsertMenu(
   }
 }
 
-export async function deleteUser(
+export async function deleteMenu(
   id_menu: string
 ): Promise<ServerActionResponse> {
   try {

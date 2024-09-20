@@ -4,51 +4,71 @@ import DataTable, { TableColumn } from "react-data-table-component";
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { toast } from "sonner";
 
-import { deleteUser } from "../actions";
+import { deleteMenu } from "../actions";
 
 import { Button } from "@/app/_components/global/button";
-import { user } from "@prisma/client";
+import { menu } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import Modal from "./modal";
+import Image from "next/image";
 
-export default function UserTable({ data }: { data: user[] }) {
+export default function MenuTable({ data }: { data: menu[] }) {
   const [loader, setLoader] = useState(true);
-  const [editModalData, setEditModalData] = useState<user | null>(null);
+  const [editModalData, setEditModalData] = useState<menu | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const router = useRouter();
 
-  const columns: TableColumn<user>[] = [
+  const columns: TableColumn<menu>[] = [
     {
-      name: "Nama User",
-      selector: (row) => row.name,
+      name: "Nama Menu",
+      selector: (row) => row.nama_menu,
       sortable: false,
     },
     {
-      name: "Username",
-      selector: (row) => row.username,
+      name: "Jenis",
+      selector: (row) => row.jenis,
       sortable: false,
     },
     {
-      name: "Role",
-      selector: (row) => row.role,
-
-      sortable: true,
+      name: "Deskripsi",
+      selector: (row) => row.deskripsi,
+      sortable: false,
+    },
+    {
+      name: "Gambar",
+      selector: (row) => row.gambar,
+      sortable: false,
+      cell: (row) => (
+        <Image
+          src={`/menu/${row.gambar}`}
+          alt={`Gambar ${row.nama_menu}`}
+          width={52}
+          height={52}
+          layout="responsive"
+          unoptimized
+        />
+      ),
+    },
+    {
+      name: "Harga",
+      selector: (row) => row.harga,
+      sortable: false,
     },
     {
       name: "Action",
       cell: (row) => (
         <div className="flex gap-2">
           <button
-            onClick={() => editUser(row)}
-            title="Edit User"
+            onClick={() => editMenu(row)}
+            title="Edit Menu"
             className="me-2 rounded bg-blue-100 p-2.5 text-xs font-medium text-blue-800 transition-all hover:bg-blue-700 hover:text-white"
           >
             <FaPencilAlt />
           </button>
           <button
-            onClick={() => deleteAction(row.id_user)}
-            title="Delete User"
+            onClick={() => deleteAction(row.id_menu)}
+            title="Delete Menu"
             className="me-2 rounded bg-red-100 p-2.5 text-xs font-medium text-red-800 transition-all hover:bg-red-700 hover:text-white"
           >
             <FaRegTrashAlt />
@@ -58,13 +78,13 @@ export default function UserTable({ data }: { data: user[] }) {
     },
   ];
 
-  function editUser(data: user) {
+  function editMenu(data: menu) {
     setEditModalData(data);
     setIsCreateModalOpen(false);
     setIsEditModalOpen(true);
   }
 
-  function createUser() {
+  function createMenu() {
     setEditModalData(null);
     setIsEditModalOpen(false);
     setIsCreateModalOpen(true);
@@ -74,7 +94,7 @@ export default function UserTable({ data }: { data: user[] }) {
     if (!confirm("Anda yakin ingin menghapus user ini?")) return;
 
     const toastId = toast.loading("Loading...");
-    const deleteResponse = await deleteUser(id);
+    const deleteResponse = await deleteMenu(id);
 
     if (!deleteResponse.success)
       return toast.error(deleteResponse.message, { id: toastId });
@@ -94,10 +114,10 @@ export default function UserTable({ data }: { data: user[] }) {
       <Button
         variant={"primary"}
         onClick={() => {
-          createUser();
+          createMenu();
         }}
       >
-        Add user
+        Add Menu
       </Button>
       <div className="rounded-md bg-white p-2">
         {isEditModalOpen && (

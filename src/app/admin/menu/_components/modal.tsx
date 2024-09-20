@@ -1,15 +1,16 @@
 "use client";
-import { Role, user } from "@prisma/client";
+import { menu, Jenis } from "@prisma/client";
 import { Dispatch, SetStateAction, useState } from "react";
 import { FaX } from "react-icons/fa6";
 
 import { Button } from "@/app/_components/global/button";
-import { TextField } from "@/app/_components/global/input";
+import { TextField, FileField } from "@/app/_components/global/input";
 import { H3 } from "@/app/_components/global/text";
 import { useZodForm } from "@/app/hooks/useZodForm";
 import {
   createMenuFormSchema,
   updateMenuFormSchema,
+  ACCEPTED_IMAGE_TYPES,
 } from "@/lib/validator/menu";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -22,15 +23,16 @@ export default function Modal({
   data,
 }: {
   setIsOpenModal: Dispatch<SetStateAction<boolean>>; // Needed for closing the modal
-  data?: user | null;
+  data?: menu | null;
 }) {
   const [loading, setLoading] = useState(false);
   const form = useZodForm({
     defaultValues: {
-      name: data?.name,
-      username: data?.username,
-      password: "",
-      role: data?.role,
+      nama_menu: data?.nama_menu,
+      jenis: data?.jenis,
+      deskripsi: data?.deskripsi,
+      gambar: undefined,
+      harga: data?.harga.toString(),
     },
     schema: data === null ? createMenuFormSchema : updateMenuFormSchema,
   });
@@ -39,7 +41,15 @@ export default function Modal({
   const onSubmit = form.handleSubmit(async (values) => {
     setLoading(true);
     const toastId = toast.loading("Loading...");
-    const result = await upsertUser(data?.id_user, values);
+    const gambarFile = (values.gambar as FileList)[0];
+    const actionData = new FormData();
+    actionData.append("nama_menu", values.nama_menu);
+    actionData.append("jenis", values.jenis);
+    actionData.append("deskripsi", values.deskripsi);
+    actionData.append("harga", values.harga);
+    actionData.append("gambar", gambarFile);
+
+    const result = await upsertMenu(data?.id_menu, actionData);
 
     if (!result.success) {
       setLoading(false);
@@ -56,9 +66,9 @@ export default function Modal({
     <ModalWrapper>
       <form onSubmit={onSubmit}>
         <div className="flex items-center justify-between border-b p-4 md:p-5">
-          <H3>User Data</H3>
+          <H3>Menu Data</H3>
           <button
-            className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 transition-all hover:bg-gray-200 hover:text-gray-900"
+            className="ml-auto inline-flex items-center rounded-lg bg-red-200 p-1.5 text-sm text-gray-400 transition-all hover:bg-gray-200 hover:text-gray-900"
             onClick={() => setIsOpenModal(false)}
             type="button"
           >
@@ -68,36 +78,43 @@ export default function Modal({
         <div className="space-y-4 p-4 md:p-5">
           <TextField
             type="text"
-            label="Nama User"
-            placeholder="Jane Doe"
-            errorMessage={form.formState.errors.name?.message}
-            {...form.register("name")}
+            label="Nama Menu"
+            placeholder="Food or Drink"
+            errorMessage={form.formState.errors.nama_menu?.message}
+            {...form.register("nama_menu")}
+          />
+          <SelectFieldController
+            name="jenis"
+            control={form.control}
+            label="Select Jenis"
+            options={Object.values(Jenis).map((jenis) => ({
+              label: jenis,
+              value: jenis,
+            }))}
+          />
+          <FileField
+            name="gambar"
+            label="Gambar"
+            register={form.register}
+            accept={ACCEPTED_IMAGE_TYPES.join(", ")}
+            errorMessage={form.formState.errors.gambar?.message?.toString()}
           />
           <TextField
             type="text"
-            label="Username"
-            placeholder="xx@smktelkom-mlg.sch.id"
-            errorMessage={form.formState.errors.username?.message}
-            {...form.register("username")}
-          />
-          <SelectFieldController
-            name="role"
-            control={form.control}
-            label="Select role"
-            options={Object.values(Role).map((role) => ({
-              label: role,
-              value: role,
-            }))}
+            label="Deskripsi"
+            placeholder="...."
+            errorMessage={form.formState.errors.deskripsi?.message}
+            {...form.register("deskripsi")}
           />
           <TextField
-            type="password"
-            label="Password"
-            placeholder="**********"
-            errorMessage={form.formState.errors.password?.message}
-            {...form.register("password")}
+            type="number"
+            label="Harga"
+            placeholder="Rp"
+            errorMessage={form.formState.errors.harga?.message}
+            {...form.register("harga")}
           />
         </div>
-        <div className="flex items-center justify-end rounded-b border-t border-gray-200 p-4 md:p-5">
+        <div className="flex items-center justify-end rounded-b border-t border-black-300 p-4 md:p-5">
           <Button variant={"primary"} type="submit" disabled={loading}>
             Kirim
           </Button>

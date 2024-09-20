@@ -10,7 +10,7 @@ export default function NextAuthProvider({ children }: Props) {
   return (
     <SessionProvider
       refetchOnWindowFocus
-      refetchInterval={600}
+      refetchInterval={500}
       basePath="/api/auth"
     >
       {children}

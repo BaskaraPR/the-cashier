@@ -1,9 +1,11 @@
 import prisma from "../lib/prisma";
 import { Prisma } from "@prisma/client";
 
-
 export async function findTransaksis(filter?: Prisma.transaksiWhereInput) {
-  const transaksis = await prisma.transaksi.findMany({ where: filter });
+  const transaksis = await prisma.transaksi.findMany({
+    where: filter,
+    include: { transaksiBy: true , meja:true,},
+  });
   return transaksis;
 }
 
@@ -19,13 +21,18 @@ export async function createTransaksi(data: Prisma.transaksiCreateInput) {
 
 export async function updateTransaksi(
   filter: Prisma.transaksiWhereUniqueInput,
-  data: Prisma.transaksiUpdateInput,
+  data: Prisma.transaksiUpdateInput
 ) {
-  const updatedtransaksi = await prisma.transaksi.update({ where: filter, data });
+  const updatedtransaksi = await prisma.transaksi.update({
+    where: filter,
+    data,
+  });
   return updatedtransaksi;
 }
 
-export async function removeTransaksi(filter: Prisma.transaksiWhereUniqueInput) {
+export async function removeTransaksi(
+  filter: Prisma.transaksiWhereUniqueInput
+) {
   const deletedtransaksi = await prisma.transaksi.delete({ where: filter });
   return deletedtransaksi;
 }
