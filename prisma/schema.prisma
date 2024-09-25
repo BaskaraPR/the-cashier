@@ -53,7 +53,7 @@ model transaksi {
   status Status @default(BELUM_BAYAR)
 
   details detail_transaksi[]
-  transaksiBy user  @relation(fields: [id_user], references: [id_user])
+  user user  @relation(fields: [id_user], references: [id_user])
   meja meja @relation(fields: [id_meja],references: [id_meja])
   @@map("Transaksi")
 }
@@ -63,6 +63,8 @@ model detail_transaksi{
   id_transaksi String
   id_menu String
   harga Int
+  qty Int
+  totalHarga BigInt
 
   transaksi transaksi @relation(fields: [id_transaksi],references: [id_transaksi])
   menu menu @relation(fields: [id_menu],references: [id_menu])

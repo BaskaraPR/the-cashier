@@ -71,6 +71,8 @@ export const authOptions: AuthOptions = {
             username: user.username,
           };
 
+          console.log(userPayload);
+
           return userPayload;
         } catch (e) {
           console.error("Authorization error:", e);
@@ -95,7 +97,7 @@ export const authOptions: AuthOptions = {
           await createUser({
             username: user.username,
             name: user.name,
-            password: ""
+            password: "",
           });
         }
       }

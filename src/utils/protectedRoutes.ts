@@ -33,6 +33,12 @@ export const protectedRoutes: ProtectedRoutes[] = [
     roles: ["KASIR"],
   },
   {
+    title: "History",
+    path: "/kasir/history",
+    regex: /\/kasir\/history(\/|)[A-Za-z]?/i,
+    roles: ["KASIR"],
+  },
+  {
     title: "Record",
     path: "/manajer/record",
     regex: /\/manajer\/record(\/|)[A-Za-z]?/i,
