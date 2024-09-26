@@ -12,16 +12,14 @@ import cn from "@/lib/cn";
 
 // export const metadata: Metadata = {
 //   title: {
-//     default: "Digifest - SMK Telkom Malang",
-//     template: "%s | Digifest",
+//     default: "Illusory Drink",
+//     template: "%s | Illusory",
 //   },
-//   description:
-//     "Digifest merupakan salah satu rangkaian acara dari Dis Natalies SMK Telkom Malang",
-//   keywords:
-//     "moklet, Moklet, Digifest, Telkom, SMK, Malang, SMK Telkom Malang, Olimawisa, MIFest, MI, Fest",
-//   authors: { name: "MokletDev", url: "https://dev.moklet.org" },
-//   creator: "MokletDev Team",
-//   publisher: "SMK Telkom Malang",
+//   description: "Drink Sweets eat sweets",
+//   keywords: "cafe, illusory, Illusory,Cafe,drink,Drinks,Sweets,food,beverage",
+//   authors: { name: "BaskaraPR", url: "https://github.com/BaskaraPR" },
+//   creator: "Baskara PR",
+//   publisher: "Baskara",
 //   robots: robots,
 // };
 

@@ -2,7 +2,6 @@ import { useEffect, useState, Dispatch, SetStateAction } from "react";
 import { FaX } from "react-icons/fa6";
 import { Button } from "@/app/_components/global/button";
 import { TextField } from "@/app/_components/global/input";
-import { SelectFieldController } from "@/app/_components/global/input-controller";
 import { H3 } from "@/app/_components/global/text";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -64,6 +63,16 @@ export default function TransaksiModal({
     }
   }, []);
 
+  const handleRemoveItem = (id_menu: string) => {
+    setDetails((prevDetails) => {
+      const updatedDetails = prevDetails.filter(
+        (item) => item.id_menu !== id_menu
+      );
+      localStorage.setItem("cart", JSON.stringify(updatedDetails));
+      return updatedDetails;
+    });
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -77,7 +86,7 @@ export default function TransaksiModal({
     const toastId = toast.loading("Loading...");
 
     try {
-      // Combine transaksi values and details (including cart data) into one payload
+      // @ts-ignore
       const result = await upsertTransaksi(data?.id_transaksi, formValues);
 
       if (!result.success) {
@@ -85,19 +94,15 @@ export default function TransaksiModal({
         return toast.error(result.message, { id: toastId });
       }
 
-      // Use the new or existing transaction ID
-      const transaksiId = data?.id_transaksi ?? result.id_transaksi; // Get the newly created id_transaksi if needed
+      const transaksiId = data?.id_transaksi ?? result.id_transaksi;
 
       const detailResult = await insertDetail(
         transaksiId,
         details.map((detail) => ({
           ...detail,
-          id_transaksi: transaksiId, // Ensure that the correct transaction ID is passed
+          id_transaksi: transaksiId ?? "",
         }))
       );
-
-      console.log("Submitting form with values:", formValues);
-      console.log("Submitting cart details:", details);
 
       if (!detailResult.success) {
         setLoading(false);
@@ -141,8 +146,6 @@ export default function TransaksiModal({
             onChange={handleChange}
             required
           />
-
-          {/* Simplified Select without control */}
           <label htmlFor="id_meja">Select Meja</label>
           <select
             name="id_meja"
@@ -162,14 +165,24 @@ export default function TransaksiModal({
           </select>
 
           <H3>Detail Transaksi</H3>
-          {/* Display Cart Items */}
           {details.length > 0 ? (
             details.map((item) => (
-              <div key={item.id_menu} className="p-2 border-b">
-                <p>Menu: {item.nama}</p>
-                <p>Harga: Rp. {item.harga}</p>
-                <p>Qty: {item.qty}</p>
-                <p>Total Harga: Rp. {item.totalHarga}</p>
+              <div
+                key={item.id_menu}
+                className="p-2 border-b flex justify-between items-center"
+              >
+                <div>
+                  <p>Menu: {item.nama}</p>
+                  <p>Harga: Rp. {item.harga}</p>
+                  <p>Qty: {item.qty}</p>
+                  <p>Total Harga: Rp. {item.totalHarga}</p>
+                </div>
+                <button
+                  onClick={() => handleRemoveItem(item.id_menu)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  Remove
+                </button>
               </div>
             ))
           ) : (
@@ -177,7 +190,11 @@ export default function TransaksiModal({
           )}
         </div>
         <div className="flex items-right justify-end rounded-b border-t p-4">
-          <Button variant={"primary"} type="submit" disabled={loading}>
+          <Button
+            variant={"primary"}
+            type="submit"
+            disabled={loading || details.length === 0}
+          >
             Kirim
           </Button>
         </div>

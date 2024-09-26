@@ -112,6 +112,36 @@ export async function insertDetail(
   }
 }
 
+export async function updateStatus(
+  id_transaksi: string,
+  data: { status?: Status }
+): Promise<ServerActionResponse> {
+  try {
+    const session = await getServerSession();
+    if (session?.user?.role !== "KASIR")
+      return { success: false, message: "Forbidden" };
+    const { status } = data;
+    const transaksi = await findTransaksi({ id_transaksi });
+    if (!transaksi) {
+      return { success: false, message: "Transaction not found!" };
+    }
+
+    await prisma.transaksi.update({
+      where: { id_transaksi },
+      data: { status },
+    });
+
+    revalidatePath(`/kasir/transaksi`);
+    return {
+      success: true,
+      message: "Transaction status updated successfully!",
+    };
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: "Terjadi kesalahan!" };
+  }
+}
+
 export async function deleteTransaksi(
   id_transaksi: string
 ): Promise<ServerActionResponse> {

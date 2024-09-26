@@ -1,21 +1,46 @@
 "use client";
 import { useEffect, useState } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
-import { FaPencilAlt } from "react-icons/fa";
+import { FaPencilAlt, FaReceipt } from "react-icons/fa";
 import { toast } from "sonner";
+import ReceiptMaker from "./printPdf";
+import { transaksiWithUsersAndMejas } from "@/types/relation";
 import { stringifyCompleteDate } from "@/utils/stringifyDate";
-import { transaksi } from "@prisma/client";
+import { transaksi, meja } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import TransaksiModal from "@/app/kasir/transaksi/_components/modal";
+import Edit from "./editModal";
 
-export default function TransaksiTable({ data }: { data: transaksi[] }) {
+export default function TransaksiTable({
+  data,
+  mejaData,
+}: {
+  data: transaksiWithUsersAndMejas[];
+  mejaData: meja[];
+}) {
   const [loader, setLoader] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editModalData, setEditModalData] = useState<transaksi | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [receiptData, setReceiptData] =
+    useState<transaksiWithUsersAndMejas | null>(null); // To store selected transaction data for the receipt
   const router = useRouter();
 
-  const columns: TableColumn<transaksi>[] = [
+  const getMejaNumber = (id_meja: string) => {
+    const meja = mejaData.find((m) => m.id_meja === id_meja);
+    return meja ? meja.nomor_meja : "Unknown Table";
+  };
+
+  function editStatus(data: transaksi) {
+    setEditModalData(data);
+    setIsEditModalOpen(true);
+  }
+
+  function openReceiptModal(row: transaksiWithUsersAndMejas) {
+    setReceiptData(row); // Store the selected transaction data for the receipt
+    setIsModalOpen(true);
+  }
+
+  const columns: TableColumn<transaksiWithUsersAndMejas>[] = [
     {
       name: "Nama Pelanggan",
       selector: (row) => row.nama_pelanggan,
@@ -24,41 +49,43 @@ export default function TransaksiTable({ data }: { data: transaksi[] }) {
     {
       name: "Tanggal Transaksi",
       selector: (row) => stringifyCompleteDate(row.tgl_transaksi),
-      sortable: false,
+      sortable: true,
     },
     {
-      name: "Meja",
-      selector: (row) => row.id_meja,
-
-      sortable: true,
+      name: "Nomor Meja",
+      selector: (row) => getMejaNumber(row.id_meja),
+      sortable: false,
     },
     {
       name: "Status",
       selector: (row) => row.status,
-
-      sortable: true,
+      sortable: false,
     },
     {
-      name: "Action",
+      name: "Update Status",
       cell: (row) => (
-        <div className="flex gap-2">
-          <button
-            onClick={() => editUser(row)}
-            title="Edit User"
-            className="me-2 rounded bg-blue-100 p-2.5 text-xs font-medium text-blue-800 transition-all hover:bg-blue-700 hover:text-white"
-          >
-            <FaPencilAlt />
-          </button>
-        </div>
+        <button
+          onClick={() => editStatus(row)}
+          title="Edit Status"
+          className="me-2 rounded bg-blue-100 p-2.5 text-xs font-medium text-blue-800 transition-all hover:bg-blue-700 hover:text-white"
+        >
+          <FaPencilAlt />
+        </button>
+      ),
+    },
+    {
+      name: "Details",
+      cell: (row) => (
+        <button
+          onClick={() => openReceiptModal(row)}
+          title="Receipt"
+          className="me-2 flex rounded bg-blue-100 p-2.5 text-xs font-medium text-blue-800 transition-all hover:bg-blue-700 hover:text-white"
+        >
+          <FaReceipt /> More..
+        </button>
       ),
     },
   ];
-
-  function editUser(data: transaksi) {
-    setEditModalData(data);
-    setIsCreateModalOpen(false);
-    setIsEditModalOpen(true);
-  }
 
   useEffect(() => {
     setLoader(false);
@@ -71,6 +98,18 @@ export default function TransaksiTable({ data }: { data: transaksi[] }) {
       <div className="rounded-md bg-white p-2">
         <DataTable columns={columns} data={data} pagination highlightOnHover />
       </div>
+
+      {isEditModalOpen && (
+        <Edit setIsOpenModal={setIsEditModalOpen} data={editModalData} />
+      )}
+
+      {isModalOpen && receiptData && (
+        <ReceiptMaker
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          transaksiData={receiptData}
+        />
+      )}
     </>
   );
 }

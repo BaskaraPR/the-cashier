@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 export async function findTransaksis(filter?: Prisma.transaksiWhereInput) {
   const transaksis = await prisma.transaksi.findMany({
     where: filter,
-    include: { user: true , meja:true},
+    include: { user: true, meja: true, details: { include: { menu: true } } },
   });
   return transaksis;
 }

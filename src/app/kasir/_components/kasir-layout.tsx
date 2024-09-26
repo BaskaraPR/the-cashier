@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useRef } from "react";
 
-import Sidebar from "./sidebar";
-import Navbar from "./navbar";
+import Sidebar from "@/app/admin/_components/sidebar";
+import Navbar from "@/app/admin/_components/navbar";
 
 export default function KasirLayout({
   children,

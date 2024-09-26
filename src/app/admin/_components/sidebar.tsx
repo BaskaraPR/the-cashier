@@ -34,9 +34,7 @@ export default function Sidebar({ nav, session }: SidebarProps) {
       <div className="relative flex min-h-0 flex-1 flex-col border-r border-gray-200 bg-white px-4 pt-0">
         <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-5">
           <div className="flex-1 space-y-1 bg-white px-3">
-            <Link href={"/"} className="block">
-             
-            </Link>
+            <Link href={"/"} className="block"></Link>
             <ul className="space-y-4 pb-2">
               <li>
                 <Link
@@ -59,7 +57,7 @@ export default function Sidebar({ nav, session }: SidebarProps) {
                       "group flex items-center rounded-lg p-2 text-base font-normal text-primary-400 transition-all hover:bg-red-200"
                     }
                   >
-                    <div/>
+                    <div />
                     <P className="ml-3 whitespace-nowrap font-semibold text-primary-400">
                       {item.title}
                     </P>
@@ -68,7 +66,9 @@ export default function Sidebar({ nav, session }: SidebarProps) {
               ))}
               <Button
                 variant={"primary"}
-                onClick={() => signOut({ callbackUrl: "/", redirect: true })}
+                onClick={() =>
+                  signOut({ callbackUrl: "/auth/login", redirect: true })
+                }
                 className="w-full"
               >
                 Log Out

@@ -9,7 +9,6 @@ export const updateTransaksiFormSchema = z.object({
   id_meja: z
     .string({ message: "Meja harus diisi!" })
     .uuid("Stage ID harus berupa UUID"),
-  status: z.enum(["BELUM_BAYAR", "LUNAS"]),
 });
 
 export const createTransaksiFormSchema = z.object({
@@ -21,5 +20,9 @@ export const createTransaksiFormSchema = z.object({
   id_meja: z
     .string({ message: "Meja harus diisi!" })
     .uuid("Stage ID harus berupa UUID"),
+  status: z.enum(["BELUM_BAYAR", "LUNAS"]),
+});
+
+export const statusUpdateSchema = z.object({
   status: z.enum(["BELUM_BAYAR", "LUNAS"]),
 });

@@ -1,4 +1,3 @@
-import { getServerSession } from "@/lib/next-auth";
 import { FaTable, FaUser } from "react-icons/fa";
 import { Display } from "../_components/global/text";
 import StatsCard from "./_components/stats-card";
@@ -7,7 +6,6 @@ import { IoFastFood } from "react-icons/io5";
 import { FaBottleDroplet } from "react-icons/fa6";
 
 export default async function Dashboard() {
-  const session = await getServerSession();
   const [kasirsCount] = await prisma.$transaction([
     prisma.user.count({ where: { role: "KASIR" } }),
   ]);

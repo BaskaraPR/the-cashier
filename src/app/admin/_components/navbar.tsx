@@ -73,7 +73,9 @@ export default function Navbar({ session }: { session: Session | null }) {
             ))}
             <Button
               variant={"primary"}
-              onClick={() => signOut({ callbackUrl: "/", redirect: true })}
+              onClick={() =>
+                signOut({ callbackUrl: "/auth/login", redirect: true })
+              }
               className="w-full"
             >
               Log Out
