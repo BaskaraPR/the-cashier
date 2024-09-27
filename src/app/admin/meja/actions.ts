@@ -12,7 +12,7 @@ import { revalidatePath } from "next/cache";
 
 export async function upsertMeja(
   id_meja: string | undefined | null,
-  data: { nomor_meja: string }
+  data: { nomor_meja: number }
 ): Promise<ServerActionResponse> {
   try {
     const session = await getServerSession();

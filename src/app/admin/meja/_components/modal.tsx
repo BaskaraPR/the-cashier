@@ -20,14 +20,11 @@ export default function Modal({
   setIsOpenModal,
   data,
 }: {
-  setIsOpenModal: Dispatch<SetStateAction<boolean>>; // Needed for closing the modal
+  setIsOpenModal: Dispatch<SetStateAction<boolean>>;
   data?: meja | null;
 }) {
   const [loading, setLoading] = useState(false);
   const form = useZodForm({
-    defaultValues: {
-      nomor_meja: data?.nomor_meja,
-    },
     schema: data === null ? createMejaFormSchema : updateMejaFormSchema,
   });
   const router = useRouter();
@@ -35,7 +32,8 @@ export default function Modal({
   const onSubmit = form.handleSubmit(async (values) => {
     setLoading(true);
     const toastId = toast.loading("Loading...");
-    const result = await upsertMeja(data?.id_meja, values);
+    const nomor_meja = Number(values.nomor_meja);
+    const result = await upsertMeja(data?.id_meja, { nomor_meja });
 
     if (!result.success) {
       setLoading(false);
@@ -63,11 +61,11 @@ export default function Modal({
         </div>
         <div className="space-y-4 p-4 md:p-5">
           <TextField
-            type="text"
+            type="number"
             label="Nomor Meja"
             placeholder=" "
             errorMessage={form.formState.errors.nomor_meja?.message}
-            {...form.register("nomor_meja")}
+            {...form.register("nomor_meja", { valueAsNumber: true })}
           />
         </div>
         <div className="flex items-center justify-end rounded-b border-t border-gray-200 p-4 md:p-5">
