@@ -7,7 +7,7 @@ import ButtTemp from "./_components/trButt";
 export default async function Page() {
   const menus = await findMenus({});
   const mejas = await findMejas();
-  return (  
+  return (
     <div>
       <div className="mb-5 flex items-center justify-between">
         <div>
@@ -17,8 +17,6 @@ export default async function Page() {
         </div>
       </div>
       <div className="flex flex-wrap gap-4">
-        {" "}
-        {/* Flex container for menu cards */}
         {menus.map((menu) => (
           <MenuCard key={menu.id_menu} menuData={menu} />
         ))}

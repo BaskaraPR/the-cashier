@@ -4,8 +4,10 @@ import StatsCard from "./_components/stats-card";
 import prisma from "@/lib/prisma";
 import { IoFastFood } from "react-icons/io5";
 import { FaBottleDroplet } from "react-icons/fa6";
+import { getServerSession } from "@/lib/next-auth";
 
 export default async function Dashboard() {
+  const session = await getServerSession();
   const [kasirsCount] = await prisma.$transaction([
     prisma.user.count({ where: { role: "KASIR" } }),
   ]);
@@ -25,7 +27,9 @@ export default async function Dashboard() {
 
   return (
     <>
-      <Display>Hello There, !</Display>
+      <Display>Hello There, <span className="text-primary-400">
+          {session?.user?.name.split(" ")[0]}
+        </span>!</Display>
       <div className="mt-5 flex items-center gap-10">
         <StatsCard title="Kasir" count={kasirsCount} Icon={FaUser} />
         <StatsCard title="Admin" count={adminsCount} Icon={FaUser} />

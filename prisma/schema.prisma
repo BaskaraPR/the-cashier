@@ -26,7 +26,7 @@ model user {
 
 model meja {
   id_meja      String     @id @default(uuid())
-  nomor_meja    String @unique
+  nomor_meja    Int @unique
 
   transaksi transaksi[]
   @@map("Meja")

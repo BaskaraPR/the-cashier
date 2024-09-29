@@ -1,10 +1,10 @@
 import React from "react";
 import { Metadata } from "next";
 
-import AdminLayout from "./_components/admin-layout";
+import ManajerLayout from "./_components/manajer-layout";
 
 export const metadata: Metadata = {
-  title: "Admin Panel",
+  title: "Manajer Panel",
 };
 
 export default function RootLayout({
@@ -12,11 +12,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <AdminLayout>
-      {children}
-    </AdminLayout>
-  );
+  return <ManajerLayout>{children}</ManajerLayout>;
 }
 
 export const revalidate = 900;

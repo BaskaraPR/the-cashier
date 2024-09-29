@@ -10,13 +10,31 @@ import { Button } from "@/app/_components/global/button";
 import { user } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import Modal from "./modal";
+import SearchInput from "@/app/_components/global/searchBar";
 
 export default function UserTable({ data }: { data: user[] }) {
   const [loader, setLoader] = useState(true);
   const [editModalData, setEditModalData] = useState<user | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [roleFilter, setRoleFilter] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState(data);
+
   const router = useRouter();
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSearch = () => {
+    const filtered = data.filter(
+      (user) =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+  };
 
   const columns: TableColumn<user>[] = [
     {
@@ -32,7 +50,6 @@ export default function UserTable({ data }: { data: user[] }) {
     {
       name: "Role",
       selector: (row) => row.role,
-
       sortable: true,
     },
     {
@@ -58,18 +75,21 @@ export default function UserTable({ data }: { data: user[] }) {
     },
   ];
 
+  // Edit user function
   function editUser(data: user) {
     setEditModalData(data);
     setIsCreateModalOpen(false);
     setIsEditModalOpen(true);
   }
 
+  // Create user function
   function createUser() {
     setEditModalData(null);
     setIsEditModalOpen(false);
     setIsCreateModalOpen(true);
   }
 
+  // Delete user function
   async function deleteAction(id: string) {
     if (!confirm("Anda yakin ingin menghapus user ini?")) return;
 
@@ -83,6 +103,10 @@ export default function UserTable({ data }: { data: user[] }) {
     router.refresh();
   }
 
+  const filteredData = filteredUsers.filter((user) =>
+    roleFilter ? user.role === roleFilter : true
+  );
+
   useEffect(() => {
     setLoader(false);
   }, []);
@@ -91,14 +115,28 @@ export default function UserTable({ data }: { data: user[] }) {
 
   return (
     <>
-      <Button
-        variant={"primary"}
-        onClick={() => {
-          createUser();
-        }}
-      >
-        Add user
-      </Button>
+      <div className="mb-4 flex items-center gap-4">
+        <Button
+          variant={"primary"}
+          onClick={() => {
+            createUser();
+          }}
+        >
+          Add user
+        </Button>
+
+        <select
+          value={roleFilter}
+          onChange={(e) => setRoleFilter(e.target.value)}
+          className="p-2 border rounded-md"
+        >
+          <option value="">All</option>
+          <option value="ADMIN">Admin</option>
+          <option value="KASIR">Kasir</option>
+          <option value="MANAJER">Manajer</option>
+        </select>
+      </div>
+
       <div className="rounded-md bg-white p-2">
         {isEditModalOpen && (
           <Modal setIsOpenModal={setIsEditModalOpen} data={editModalData} />
@@ -107,7 +145,17 @@ export default function UserTable({ data }: { data: user[] }) {
           <Modal setIsOpenModal={setIsCreateModalOpen} data={null} />
         )}
 
-        <DataTable columns={columns} data={data} pagination highlightOnHover />
+        <SearchInput
+          searchTerm={searchTerm}
+          handleSearchChange={handleSearchChange}
+          handleSearch={handleSearch}
+        />
+        <DataTable
+          columns={columns}
+          data={filteredData}
+          pagination
+          highlightOnHover
+        />
       </div>
     </>
   );

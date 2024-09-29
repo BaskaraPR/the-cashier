@@ -76,7 +76,7 @@ export default function Navbar({ session }: { session: Session | null }) {
               onClick={() =>
                 signOut({ callbackUrl: "/auth/login", redirect: true })
               }
-              className="w-full"
+              className="w-full justify-center"
             >
               Log Out
             </Button>

@@ -45,11 +45,14 @@ export default function LoginForm() {
   });
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <form onSubmit={onSubmit} className="mt-[54px] ">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <form
+        onSubmit={onSubmit}
+        className="mt-[54px] w-full max-w-md p-6 bg-white rounded-lg shadow-md"
+      >
         <div className="mb-[54px] block">
-          <H2>Masuk ke Akun Anda</H2>
-          <P>
+          <H2 className="text-center">Masuk ke Akun Anda</H2>
+          <P className="text-center">
             Belum memiliki akun?{" "}
             <NextLink
               href={"/auth/register"}
@@ -119,6 +122,8 @@ export default function LoginForm() {
             placeholder="Masukkan Nama User"
             errorMessage={form.formState.errors.name?.message}
             {...form.register("name")}
+            aria-label="Nama User"
+            required
           />
           <TextField
             className="mb-2"
@@ -127,6 +132,8 @@ export default function LoginForm() {
             placeholder="Masukkan kata sandi"
             errorMessage={form.formState.errors.password?.message}
             {...form.register("password")}
+            aria-label="Password"
+            required
           />
         </div>
         <Button
@@ -135,7 +142,7 @@ export default function LoginForm() {
           className="w-full justify-center"
           disabled={loading}
         >
-          Masuk
+          {loading ? "Loading..." : "Masuk"}
         </Button>
       </form>
     </div>

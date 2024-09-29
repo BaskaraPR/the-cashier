@@ -17,13 +17,9 @@ export async function upsertTransaksi(
   id_transaksi: string | undefined | null,
   data: {
     nama_pelanggan: string;
-    tgl_transaksi: Date;
-    id_user: string;
     id_meja: string;
-    status: Status;
   }
 ): Promise<ServerActionResponse & { id_transaksi?: string }> {
-  // Return id_transaksi as part of the response
   try {
     const session = await getServerSession();
     if (!session) return { success: false, message: "Not authenticated" };
@@ -43,11 +39,9 @@ export async function upsertTransaksi(
     if (!id_transaksi) {
       const newTransaksi = await prisma.transaksi.create({
         data: {
-          tgl_transaksi: data.tgl_transaksi,
           user: { connect: { id_user: currentUserId } },
           meja: { connect: { id_meja } },
           nama_pelanggan: data.nama_pelanggan,
-          status: data.status,
         },
       });
 
@@ -55,7 +49,7 @@ export async function upsertTransaksi(
         success: true,
         message: "Sukses membuat Transaksi!",
         id_transaksi: newTransaksi.id_transaksi,
-      }; // Return new transaction ID
+      };
     }
 
     const transaksiToUpdate = await findTransaksi({ id_transaksi });
@@ -88,13 +82,12 @@ export async function insertDetail(
       return { success: false, message: "id_transaksi is required!" };
     }
 
-    // Wrap the detail inserts in a transaction for consistency
     await prisma.$transaction(async (prisma) => {
       for (const detail of detailData) {
         const { id_menu, harga, qty, totalHarga } = detail;
         await prisma.detail_transaksi.create({
           data: {
-            transaksi: { connect: { id_transaksi } }, // Connect to the correct transaksi
+            transaksi: { connect: { id_transaksi } },
             menu: { connect: { id_menu } },
             harga,
             qty,
@@ -104,7 +97,7 @@ export async function insertDetail(
       }
     });
 
-    revalidatePath(`/kasir/transaksi/${id_transaksi}`);
+    revalidatePath(`/kasir/transaksi`);
     return { success: true, message: "Sukses membuat Detail Transaksi!" };
   } catch (error) {
     console.log(error);

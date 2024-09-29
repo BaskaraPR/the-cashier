@@ -1,10 +1,8 @@
 import { H2, P } from "@/app/_components/global/text";
 import { findUsers } from "@/query/user.query";
-import { getServerSession } from "@/lib/next-auth";
 import UserTable from "./_components/table";
 
 export default async function Users() {
-  const session = await getServerSession();
   const users = await findUsers({});
 
   return (
@@ -15,6 +13,7 @@ export default async function Users() {
           <P>Change users roles and permission</P>
         </div>
       </div>
+      
       <UserTable data={users} />
     </div>
   );

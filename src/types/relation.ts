@@ -22,7 +22,7 @@ export type transaksiWithUsersAndMejas = {
 
   meja: {
     id_meja: string;
-    nomor_meja: string;
+    nomor_meja: number;
   };
 
   details: Array<{

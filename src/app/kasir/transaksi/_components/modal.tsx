@@ -86,7 +86,6 @@ export default function TransaksiModal({
     const toastId = toast.loading("Loading...");
 
     try {
-      // @ts-ignore
       const result = await upsertTransaksi(data?.id_transaksi, formValues);
 
       if (!result.success) {

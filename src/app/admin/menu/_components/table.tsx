@@ -17,6 +17,7 @@ export default function MenuTable({ data }: { data: menu[] }) {
   const [editModalData, setEditModalData] = useState<menu | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [jenisFilter, setJenisFilter] = useState<string>("");
   const router = useRouter();
 
   const columns: TableColumn<menu>[] = [
@@ -103,6 +104,10 @@ export default function MenuTable({ data }: { data: menu[] }) {
     router.refresh();
   }
 
+  const filteredData = jenisFilter
+    ? data.filter((menu) => menu.jenis === jenisFilter)
+    : data;
+
   useEffect(() => {
     setLoader(false);
   }, []);
@@ -110,7 +115,7 @@ export default function MenuTable({ data }: { data: menu[] }) {
   if (loader) return <div>Loading</div>;
 
   return (
-    <>
+    <div className="">
       <Button
         variant={"primary"}
         onClick={() => {
@@ -119,6 +124,15 @@ export default function MenuTable({ data }: { data: menu[] }) {
       >
         Add Menu
       </Button>
+      <select
+        value={jenisFilter}
+        onChange={(e) => setJenisFilter(e.target.value)}
+        className="p-2 border rounded-md"
+      >
+        <option value="">All</option>
+        <option value="MAKANAN">Makanan</option>
+        <option value="MINUMAN">Minuman</option>
+      </select>
       <div className="rounded-md bg-white p-2">
         {isEditModalOpen && (
           <Modal setIsOpenModal={setIsEditModalOpen} data={editModalData} />
@@ -127,8 +141,13 @@ export default function MenuTable({ data }: { data: menu[] }) {
           <Modal setIsOpenModal={setIsCreateModalOpen} data={null} />
         )}
 
-        <DataTable columns={columns} data={data} pagination highlightOnHover />
+        <DataTable
+          columns={columns}
+          data={filteredData}
+          pagination
+          highlightOnHover
+        />
       </div>
-    </>
+    </div>
   );
 }

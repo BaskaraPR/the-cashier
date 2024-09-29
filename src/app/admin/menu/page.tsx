@@ -1,10 +1,8 @@
 import { H2, P } from "@/app/_components/global/text";
 import { findMenus } from "@/query/menu.query";
-import { getServerSession } from "@/lib/next-auth";
 import MenuTable from "./_components/table";
 
 export default async function Users() {
-  const session = await getServerSession();
   const menus = await findMenus({});
 
   return (
