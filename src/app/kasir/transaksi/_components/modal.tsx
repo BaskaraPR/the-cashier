@@ -16,7 +16,6 @@ import ModalWrapper from "@/app/_components/global/modal-wrapper";
 export default function TransaksiModal({
   setIsOpenModal,
   data,
-  detailData,
   mejaData,
 }: {
   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
@@ -69,6 +68,7 @@ export default function TransaksiModal({
         (item) => item.id_menu !== id_menu
       );
       localStorage.setItem("cart", JSON.stringify(updatedDetails));
+      window.dispatchEvent(new Event("storage"));
       return updatedDetails;
     });
   };
@@ -109,6 +109,7 @@ export default function TransaksiModal({
       }
 
       localStorage.removeItem("cart");
+      window.dispatchEvent(new Event("storage"));
       toast.success(result.message, { id: toastId });
       setIsOpenModal(false);
       setLoading(false);
@@ -128,7 +129,7 @@ export default function TransaksiModal({
         <div className="flex items-center justify-between border-b p-4 md:p-5">
           <H3>Transaksi Data</H3>
           <button
-            className="ml-auto inline-flex items-center rounded-lg bg-red-200 p-1.5 text-sm text-gray-400 transition-all hover:bg-gray-200 hover:text-gray-900"
+            className="ml-auto inline-flex items-center rounded-lg bg-purple-200 p-1.5 text-sm text-gray-400 transition-all hover:bg-gray-200 hover:text-gray-900"
             onClick={() => setIsOpenModal(false)}
             type="button"
           >
@@ -145,7 +146,7 @@ export default function TransaksiModal({
             onChange={handleChange}
             required
           />
-          <label htmlFor="id_meja">Select Meja</label>
+          <label htmlFor="id_meja">Select Meja : </label>
           <select
             name="id_meja"
             value={formValues.id_meja}

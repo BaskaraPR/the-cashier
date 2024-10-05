@@ -44,7 +44,7 @@
   }
 
   .link {
-    @apply underline transition-all hover:text-primary-300;
+    @apply underline transition-all hover:text-purple-500;
   }
 }
 
@@ -55,3 +55,4 @@ nav:has(.checkbox-sidebar:checked) ~ .mobile-sidebar {
 .mobile-sidebar {
   @apply -right-[100%];
 }
+

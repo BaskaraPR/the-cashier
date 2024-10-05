@@ -9,17 +9,11 @@ export default async function Login() {
   if (session) return redirect("/admin");
 
   return (
-    <main className="flex min-h-screen w-screen items-center justify-center bg-gray-50">
-      <section className="flex w-full max-w-[1440px] items-center justify-center p-6 md:p-12">
-        <div className="block w-full max-w-full xl:max-w-[460px] bg-white p-6 rounded-lg shadow-md">
-          <header className="mb-4">
-            <Link href="/" variant={"tertiary"} className="flex items-center">
-              <FaArrowLeft className="mr-2" /> Kembali
-            </Link>
-          </header>
-          <LoginForm />
-        </div>
-      </section>
-    </main>
+    <div className=" p-6 rounded-lg shadow-md">
+      <Link href="/" variant="tertiary" className="flex">
+        <FaArrowLeft className="mr-1" /> Kembali
+      </Link>
+      <LoginForm />
+    </div>
   );
 }

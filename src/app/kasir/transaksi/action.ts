@@ -1,17 +1,16 @@
 "use server";
 
 import {
-  createTransaksi,
   findTransaksi,
   removeTransaksi,
   updateTransaksi,
 } from "@/query/transaksi.query";
-import { createDetailTransaksi } from "@/query/detail_transaksi.query";
 import { getServerSession } from "@/lib/next-auth";
 import { ServerActionResponse } from "@/types/action";
 import { Prisma, Status } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { connect } from "http2";
 
 export async function upsertTransaksi(
   id_transaksi: string | undefined | null,
@@ -43,6 +42,11 @@ export async function upsertTransaksi(
           meja: { connect: { id_meja } },
           nama_pelanggan: data.nama_pelanggan,
         },
+      });
+
+      await prisma.meja.update({
+        where: { id_meja },
+        data: { isVacant: false },
       });
 
       return {
@@ -107,7 +111,8 @@ export async function insertDetail(
 
 export async function updateStatus(
   id_transaksi: string,
-  data: { status?: Status }
+  data: { status?: Status },
+  id_meja: string
 ): Promise<ServerActionResponse> {
   try {
     const session = await getServerSession();
@@ -124,7 +129,14 @@ export async function updateStatus(
       data: { status },
     });
 
-    revalidatePath(`/kasir/transaksi`);
+    if (status === "LUNAS") {
+      await prisma.meja.update({
+        where: { id_meja },
+        data: { isVacant: true },
+      });
+    }
+
+    revalidatePath(`/kasir/history`);
     return {
       success: true,
       message: "Transaction status updated successfully!",

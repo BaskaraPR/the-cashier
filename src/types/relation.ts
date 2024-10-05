@@ -16,7 +16,6 @@ export type transaksiWithUsersAndMejas = {
     id_user: string;
     name: string;
     username: string;
-    password: string; // Ensure this is handled securely
     role: Role;
   };
 

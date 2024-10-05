@@ -41,7 +41,10 @@ export default function TransaksiTable({
   const isWithinDateRange = (tgl_transaksi: Date) => {
     const date = new Date(tgl_transaksi);
     const start = startDate ? new Date(startDate) : null;
-    const end = endDate ? new Date(endDate) : null;
+    let end: Date | null = endDate ? new Date(endDate) : null;
+    if (end instanceof Date && !isNaN(end.getTime())) {
+      end.setHours(23, 59, 59, 999);
+    }
 
     if (start && end) {
       return date >= start && date <= end;
@@ -51,15 +54,25 @@ export default function TransaksiTable({
       return date <= end;
     }
 
-
     return true;
   };
 
-  const filteredData = filteredUsers
-    .filter((transaksi) =>
-      statusFilter ? transaksi.status === statusFilter : true
-    )
-    .filter((transaksi) => isWithinDateRange(transaksi.tgl_transaksi));
+  useEffect(() => {
+    const filtered = data
+      .filter(
+        (transaksi) =>
+          transaksi.nama_pelanggan
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          transaksi.meja.nomor_meja.toString().includes(searchTerm)
+      )
+      .filter((transaksi) =>
+        statusFilter ? transaksi.status === statusFilter : true
+      )
+      .filter((transaksi) => isWithinDateRange(transaksi.tgl_transaksi));
+
+    setFilteredUsers(filtered);
+  }, [data, searchTerm, statusFilter, startDate, endDate]);
 
   const columns: TableColumn<transaksiWithUsersAndMejas>[] = [
     {
@@ -109,29 +122,34 @@ export default function TransaksiTable({
 
   return (
     <>
-      <select
-        value={statusFilter}
-        onChange={(e) => setStatusFilter(e.target.value)}
-        className="p-2 border rounded-md"
-      >
-        <option value="">All</option>
-        <option value="LUNAS">Lunas</option>
-        <option value="BELUM_BAYAR">Belum Bayar</option>
-      </select>
-      <div className="flex">
+      <div className="inline-block mr-2">
+        <label className="block mb-1">Status</label>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="p-2 border rounded-md"
+        >
+          <option value="">All</option>
+          <option value="LUNAS">Lunas</option>
+          <option value="BELUM_BAYAR">Belum Bayar</option>
+        </select>
+      </div>
+      <div className="inline-block mr-2">
+        <label className="block mb-1">Start Date</label>
         <input
           type="date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
           className="p-2 border rounded-md"
-          placeholder="Start Date"
         />
+      </div>
+      <div className="inline-block">
+        <label className="block mb-1">End Date</label>
         <input
           type="date"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
           className="p-2 border rounded-md"
-          placeholder="End Date"
         />
       </div>
       <div className="rounded-md bg-white p-2">
@@ -142,7 +160,7 @@ export default function TransaksiTable({
         />
         <DataTable
           columns={columns}
-          data={filteredData}
+          data={filteredUsers}
           pagination
           highlightOnHover
         />

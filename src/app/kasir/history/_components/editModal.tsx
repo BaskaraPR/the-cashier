@@ -14,6 +14,7 @@ import { statusUpdateSchema } from "@/lib/validator/transaksi";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { SelectFieldController } from "@/app/_components/global/input-controller";
+import { fetchData } from "next-auth/client/_utils";
 
 export default function Edit({
   setIsOpenModal,
@@ -32,13 +33,14 @@ export default function Edit({
   const router = useRouter();
 
   const onSubmit = form.handleSubmit(async (values) => {
+    setLoading(true);
     if (!data?.id_transaksi) {
       toast.error("Transaction data is not available.");
       return;
     }
-    setLoading(true);
+
     const toastId = toast.loading("Loading...");
-    const result = await updateStatus(data.id_transaksi, values);
+    const result = await updateStatus(data.id_transaksi, values, data.id_meja);
 
     if (!result.success) {
       setLoading(false);
@@ -46,9 +48,10 @@ export default function Edit({
     }
 
     toast.success(result.message, { id: toastId });
+
+    router.refresh();
     setIsOpenModal(false);
     setLoading(false);
-    router.refresh();
   });
 
   return (

@@ -9,27 +9,41 @@ import { getServerSession } from "@/lib/next-auth";
 export default async function Dashboard() {
   const session = await getServerSession();
   const [kasirsCount] = await prisma.$transaction([
-    prisma.user.count({ where: { role: "KASIR" } }),
+    prisma.user.count({
+      where: { AND: [{ role: "KASIR" }, { unalived: false }] },
+    }),
   ]);
   const [adminsCount] = await prisma.$transaction([
-    prisma.user.count({ where: { role: "ADMIN" } }),
+    prisma.user.count({
+      where: { AND: [{ role: "ADMIN" }, { unalived: false }] },
+    }),
   ]);
   const [manajersCount] = await prisma.$transaction([
-    prisma.user.count({ where: { role: "MANAJER" } }),
+    prisma.user.count({
+      where: { AND: [{ role: "MANAJER" }, { unalived: false }] },
+    }),
   ]);
   const [mejaCount] = await prisma.$transaction([prisma.meja.count()]);
   const [minumanCount] = await prisma.$transaction([
-    prisma.menu.count({ where: { jenis: "MINUMAN" } }),
+    prisma.menu.count({
+      where: { AND: [{ jenis: "MINUMAN" }, { isPerished: false }] },
+    }),
   ]);
   const [makananCount] = await prisma.$transaction([
-    prisma.menu.count({ where: { jenis: "MAKANAN" } }),
+    prisma.menu.count({
+      where: { AND: [{ jenis: "MAKANAN" }, { isPerished: false }] },
+    }),
   ]);
 
   return (
     <>
-      <Display>Hello There, <span className="text-primary-400">
+      <Display>
+        Hello There,{" "}
+        <span className="text-purple-400">
           {session?.user?.name.split(" ")[0]}
-        </span>!</Display>
+        </span>
+        !
+      </Display>
       <div className="mt-5 flex items-center gap-10">
         <StatsCard title="Kasir" count={kasirsCount} Icon={FaUser} />
         <StatsCard title="Admin" count={adminsCount} Icon={FaUser} />
@@ -44,7 +58,7 @@ export default async function Dashboard() {
           title="Minuman"
           count={minumanCount}
           Icon={FaBottleDroplet}
-        />  
+        />
       </div>
     </>
   );

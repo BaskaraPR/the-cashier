@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useRef } from "react";
 
-import Sidebar from "@/app/admin/_components/sidebar";
+import Sidebar from "./sidebar";
 import Navbar from "@/app/admin/_components/navbar";
 
 export default function ManajerLayout({
@@ -52,7 +52,7 @@ export default function ManajerLayout({
                     >
                       <path
                         d="M11.1377 25.4L19.2877 17.25C20.2502 16.2875 20.2502 14.7125 19.2877 13.75L11.1377 5.59998"
-                        stroke="#E04E4E"
+                        stroke="#6B46C1"
                         strokeWidth="1.2"
                         strokeMiterlimit="10"
                         strokeLinecap="round"

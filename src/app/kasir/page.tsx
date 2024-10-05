@@ -29,11 +29,7 @@ export default async function kasirDashboard() {
           count={trDoneCount}
           Icon={GiArchiveRegister}
         />
-        <StatsCard
-          title="Ngutankamun"
-          count={ngutankamun}
-          Icon={GiTakeMyMoney}
-        />
+        <StatsCard title="Unpaid" count={ngutankamun} Icon={GiTakeMyMoney} />
       </div>
     </div>
   );

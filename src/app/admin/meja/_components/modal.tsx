@@ -63,6 +63,7 @@ export default function Modal({
           <TextField
             type="number"
             label="Nomor Meja"
+            min={1}
             placeholder=" "
             errorMessage={form.formState.errors.nomor_meja?.message}
             {...form.register("nomor_meja", { valueAsNumber: true })}

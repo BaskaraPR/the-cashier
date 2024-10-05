@@ -8,14 +8,16 @@ interface StatsCardProps {
 
 export default function StatsCard({ title, count, Icon }: StatsCardProps) {
   return (
-    <div className="flex w-[240px] items-center justify-between rounded-lg bg-primary-300 p-6 shadow-md">
+    <div className="flex w-[240px] items-center justify-between rounded bg-purple-300 p-6 shadow-md">
       <div>
         <h2 className="text-lg font-semibold text-black">{title}</h2>
         <p className="text-2xl font-bold text-black">{count}</p>
       </div>
-      <div className="rounded-full bg-secondary-50 p-4 text-primary-400">
+      <div className="rounded-lg bg-secondary-50 p-4 text-black-400">
         <Icon size={24} />
       </div>
     </div>
   );
 }
+
+

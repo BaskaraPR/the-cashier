@@ -9,22 +9,31 @@ import {
 
 import cn from "@/lib/cn";
 
-const buttonVariants = cva(
-  "inline-flex items-center gap-2 rounded-full transition-all duration-300 group",
+export const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 rounded transition-all duration-300 group font-medium focus:outline-none focus:ring-2 focus:ring-offset-2",
   {
     variants: {
       variant: {
         primary:
-          "bg-primary-400 px-[22px] py-[14px] hover:bg-primary-500 text-base text-black disabled:text-white disabled:bg-neutral-300",
+          "bg-purple-500 px-[22px] py-[14px] hover:bg-purple-600 text-base text-white disabled:bg-neutral-300 disabled:text-neutral-500 focus:ring-purple-400",
         secondary:
-          "bg-transparent px-[22px] py-[14px] hover:bg-primary-50 text-base text-primary-400 disabled:text-white disabled:bg-neutral-300",
+          "bg-transparent px-[22px] py-[14px] hover:bg-purple-50 text-base text-purple-500 disabled:text-neutral-500 disabled:bg-transparent focus:ring-purple-300",
         tertiary:
-          "bg-transparent hover:text-primary-400 text-base text-black disabled:text-white disabled:text-neutral-500",
+          "bg-transparent hover:text-purple-500 text-base text-black disabled:text-neutral-500 focus:ring-purple-300",
         quartiary:
-          "bg-white px-[22px] py-[14px] border border-neutral-100 text-black hover:border-primary-400 hover:bg-primary-50 hover:text-primary-400 rounded-full disabled:text-white disabled:bg-neutral-300",
+          "bg-white px-[22px] py-[14px] border border-neutral-100 text-black hover:border-purple-500 hover:bg-purple-50 hover:text-purple-500 rounded-full disabled:text-neutral-500 disabled:bg-neutral-100 focus:ring-purple-300",
+      },
+      size: {
+        default: "text-base",
+        sm: "text-sm px-4 py-2",
+        lg: "text-lg px-6 py-4",
       },
     },
-  },
+    defaultVariants: {
+      variant: "primary",
+      size: "default",
+    },
+  }
 );
 
 interface LinkButtonProps

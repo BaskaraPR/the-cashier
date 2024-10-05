@@ -49,6 +49,7 @@ export default function Modal({
     actionData.append("harga", values.harga);
     actionData.append("gambar", gambarFile);
 
+    console.log("gambar : ", gambarFile);
     const result = await upsertMenu(data?.id_menu, actionData);
 
     if (!result.success) {
@@ -68,7 +69,7 @@ export default function Modal({
         <div className="flex items-center justify-between border-b p-4 md:p-5">
           <H3>Menu Data</H3>
           <button
-            className="ml-auto inline-flex items-center rounded-lg bg-red-200 p-1.5 text-sm text-gray-400 transition-all hover:bg-gray-200 hover:text-gray-900"
+            className="ml-auto inline-flex items-center rounded-lg bg-purple-200 p-1.5 text-sm text-gray-400 transition-all hover:bg-gray-200 hover:text-gray-900"
             onClick={() => setIsOpenModal(false)}
             type="button"
           >
@@ -110,6 +111,7 @@ export default function Modal({
             type="number"
             label="Harga"
             placeholder="Rp"
+            min={1}
             errorMessage={form.formState.errors.harga?.message}
             {...form.register("harga")}
           />

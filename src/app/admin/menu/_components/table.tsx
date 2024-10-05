@@ -20,6 +20,39 @@ export default function MenuTable({ data }: { data: menu[] }) {
   const [jenisFilter, setJenisFilter] = useState<string>("");
   const router = useRouter();
 
+  function editMenu(data: menu) {
+    setEditModalData(data);
+    setIsCreateModalOpen(false);
+    setIsEditModalOpen(true);
+  }
+
+  function createMenu() {
+    setEditModalData(null);
+    setIsEditModalOpen(false);
+    setIsCreateModalOpen(true);
+  }
+
+  async function deleteAction(id_menu: string) {
+    if (!confirm("Anda yakin ingin menghapus menu ini?")) return;
+
+    const toastId = toast.loading("Loading...");
+    const deleteResponse = await deleteMenu(id_menu);
+
+    if (!deleteResponse.success)
+      return toast.error(deleteResponse.message, { id: toastId });
+
+    toast.success(deleteResponse.message, { id: toastId });
+    router.refresh();
+  }
+
+  const filteredData = jenisFilter
+    ? data.filter((menu) => menu.jenis === jenisFilter)
+    : data;
+
+  useEffect(() => {
+    setLoader(false);
+  }, []);
+
   const columns: TableColumn<menu>[] = [
     {
       name: "Nama Menu",
@@ -70,7 +103,7 @@ export default function MenuTable({ data }: { data: menu[] }) {
           <button
             onClick={() => deleteAction(row.id_menu)}
             title="Delete Menu"
-            className="me-2 rounded bg-red-100 p-2.5 text-xs font-medium text-red-800 transition-all hover:bg-red-700 hover:text-white"
+            className="me-2 rounded bg-purple-100 p-2.5 text-xs font-medium text-red-800 transition-all hover:bg-red-700 hover:text-white"
           >
             <FaRegTrashAlt />
           </button>
@@ -78,39 +111,6 @@ export default function MenuTable({ data }: { data: menu[] }) {
       ),
     },
   ];
-
-  function editMenu(data: menu) {
-    setEditModalData(data);
-    setIsCreateModalOpen(false);
-    setIsEditModalOpen(true);
-  }
-
-  function createMenu() {
-    setEditModalData(null);
-    setIsEditModalOpen(false);
-    setIsCreateModalOpen(true);
-  }
-
-  async function deleteAction(id: string) {
-    if (!confirm("Anda yakin ingin menghapus user ini?")) return;
-
-    const toastId = toast.loading("Loading...");
-    const deleteResponse = await deleteMenu(id);
-
-    if (!deleteResponse.success)
-      return toast.error(deleteResponse.message, { id: toastId });
-
-    toast.success(deleteResponse.message, { id: toastId });
-    router.refresh();
-  }
-
-  const filteredData = jenisFilter
-    ? data.filter((menu) => menu.jenis === jenisFilter)
-    : data;
-
-  useEffect(() => {
-    setLoader(false);
-  }, []);
 
   if (loader) return <div>Loading</div>;
 
@@ -124,15 +124,18 @@ export default function MenuTable({ data }: { data: menu[] }) {
       >
         Add Menu
       </Button>
-      <select
-        value={jenisFilter}
-        onChange={(e) => setJenisFilter(e.target.value)}
-        className="p-2 border rounded-md"
-      >
-        <option value="">All</option>
-        <option value="MAKANAN">Makanan</option>
-        <option value="MINUMAN">Minuman</option>
-      </select>
+      <div className="inline-block ml-2">
+        <label className="block mb-2">Jenis</label>
+        <select
+          value={jenisFilter}
+          onChange={(e) => setJenisFilter(e.target.value)}
+          className="p-2 border rounded-md"
+        >
+          <option value="">All</option>
+          <option value="MAKANAN">Makanan</option>
+          <option value="MINUMAN">Minuman</option>
+        </select>
+      </div>
       <div className="rounded-md bg-white p-2">
         {isEditModalOpen && (
           <Modal setIsOpenModal={setIsEditModalOpen} data={editModalData} />

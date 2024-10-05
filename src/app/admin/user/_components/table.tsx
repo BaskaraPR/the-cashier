@@ -17,7 +17,6 @@ export default function UserTable({ data }: { data: user[] }) {
   const [editModalData, setEditModalData] = useState<user | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [roleFilter, setRoleFilter] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState(data);
 
@@ -27,14 +26,14 @@ export default function UserTable({ data }: { data: user[] }) {
     setSearchTerm(e.target.value);
   };
 
-  const handleSearch = () => {
+  useEffect(() => {
     const filtered = data.filter(
       (user) =>
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.username.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredUsers(filtered);
-  };
+  }, [searchTerm, data]);
 
   const columns: TableColumn<user>[] = [
     {
@@ -103,10 +102,6 @@ export default function UserTable({ data }: { data: user[] }) {
     router.refresh();
   }
 
-  const filteredData = filteredUsers.filter((user) =>
-    roleFilter ? user.role === roleFilter : true
-  );
-
   useEffect(() => {
     setLoader(false);
   }, []);
@@ -124,17 +119,6 @@ export default function UserTable({ data }: { data: user[] }) {
         >
           Add user
         </Button>
-
-        <select
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value)}
-          className="p-2 border rounded-md"
-        >
-          <option value="">All</option>
-          <option value="ADMIN">Admin</option>
-          <option value="KASIR">Kasir</option>
-          <option value="MANAJER">Manajer</option>
-        </select>
       </div>
 
       <div className="rounded-md bg-white p-2">
@@ -148,11 +132,11 @@ export default function UserTable({ data }: { data: user[] }) {
         <SearchInput
           searchTerm={searchTerm}
           handleSearchChange={handleSearchChange}
-          handleSearch={handleSearch}
+          handleSearch={() => {}}
         />
         <DataTable
           columns={columns}
-          data={filteredData}
+          data={filteredUsers}
           pagination
           highlightOnHover
         />

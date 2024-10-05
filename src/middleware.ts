@@ -19,7 +19,7 @@ export default withAuth(function middleware(req) {
 
   if (token.role === "KASIR" && !pathname.startsWith("/kasir")) {
     return NextResponse.redirect(new URL("/kasir", baseUrl));
-  } 
+  }
 
   if (token.role === "MANAJER" && !pathname.startsWith("/manajer")) {
     return NextResponse.redirect(new URL("/manajer", baseUrl));
@@ -37,5 +37,12 @@ export default withAuth(function middleware(req) {
 });
 
 export const config = {
-  matcher: ["/admin/:path*", "/admin", "/kasir/:path*", "/kasir","/manajer/:path*","/manajer"],
+  matcher: [
+    "/admin/:path*",
+    "/admin",
+    "/kasir/:path*",
+    "/kasir",
+    "/manajer/:path*",
+    "/manajer",
+  ],
 };

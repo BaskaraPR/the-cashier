@@ -76,7 +76,7 @@ export default function Modal({
           <TextField
             type="text"
             label="Username"
-            placeholder="xx@smktelkom-mlg.sch.id"
+            placeholder="Jane"
             errorMessage={form.formState.errors.username?.message}
             {...form.register("username")}
           />

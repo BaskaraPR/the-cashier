@@ -15,7 +15,7 @@ export default function Home() {
           Ready to dive in? <br />
           <NextLink
             href={"/auth/login"}
-            className="inline-block mt-4 px-6 py-3 bg-primary-400 text-black font-semibold rounded-lg shadow-md hover:bg-primary-200 transition-all duration-300"
+            className="inline-block mt-4 px-6 py-3 bg-purple-400 text-black font-semibold rounded-lg shadow-md hover:bg-purple-200 transition-all duration-300"
             aria-label="Login to your account"
           >
             Let’s Gooo!

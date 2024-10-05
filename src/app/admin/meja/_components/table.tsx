@@ -38,7 +38,7 @@ export default function MejaTable({ data }: { data: meja[] }) {
           <button
             onClick={() => deleteAction(row.id_meja)}
             title="Delete Meja"
-            className="me-2 rounded bg-red-100 p-2.5 text-xs font-medium text-red-800 transition-all hover:bg-red-700 hover:text-white"
+            className="me-2 rounded bg-purple-100 p-2.5 text-xs font-medium text-red-800 transition-all hover:bg-red-700 hover:text-white"
           >
             <FaRegTrashAlt />
           </button>

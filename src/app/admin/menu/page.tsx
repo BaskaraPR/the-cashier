@@ -10,7 +10,7 @@ export default async function Users() {
       <div className="mb-5 flex items-center justify-between">
         <div>
           <H2 className="font-semibold">Menu Managements</H2>
-          <P>Change users roles and permission</P>
+          <P>Manage Menu Data</P>
         </div>
       </div>
       <MenuTable data={menus} />

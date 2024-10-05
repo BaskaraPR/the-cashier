@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Session } from "next-auth";
@@ -45,10 +44,10 @@ export default function Navbar({ session }: { session: Session | null }) {
             <li>
               <Link
                 href={"/admin"}
-                className="group flex items-center rounded-lg p-2 text-base font-normal text-primary-400 transition-all hover:bg-red-100"
+                className="group flex items-center rounded-lg p-2 text-base font-normal text-purple-400 transition-all hover:bg-purple-100"
               >
                 <DashboardIcon />
-                <P className="ml-3 whitespace-nowrap font-semibold text-primary-400">
+                <P className="ml-3 whitespace-nowrap font-semibold text-purple-400">
                   Dashboard
                 </P>
               </Link>
@@ -60,12 +59,12 @@ export default function Navbar({ session }: { session: Session | null }) {
                   href={item.path}
                   onClick={() => setIsExpanded(false)}
                   className={
-                    (pathname.includes(item.path) ? "bg-red-100 " : "") +
-                    "group flex items-center rounded-lg p-2 text-base font-normal text-primary-400 transition-all hover:bg-red-200"
+                    (pathname.includes(item.path) ? "bg-purple-100 " : "") +
+                    "group flex items-center rounded-lg p-2 text-base font-normal text-purple-400 transition-all hover:bg-purple-200"
                   }
                 >
                   <div />
-                  <P className="ml-3 whitespace-nowrap font-semibold text-primary-400">
+                  <P className="ml-3 whitespace-nowrap font-semibold text-purple-400">
                     {item.title}
                   </P>
                 </Link>

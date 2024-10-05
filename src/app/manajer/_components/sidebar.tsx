@@ -6,9 +6,6 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/app/_components/global/button";
 import { P } from "@/app/_components/global/text";
 import { protectedRoutes } from "@/utils/protectedRoutes";
-
-import { DashboardIcon } from "./icon";
-
 type SidebarProps = {
   nav: boolean;
   session: Session | null;
@@ -36,37 +33,13 @@ export default function Sidebar({ nav, session }: SidebarProps) {
           <div className="flex-1 space-y-1 bg-white px-3">
             <Link href={"/"} className="block"></Link>
             <ul className="space-y-4 pb-2">
-              <li>
-                <Link
-                  href={"/admin"}
-                  className="group flex items-center rounded p-2 text-base font-normal text-purple-400 transition-all hover:bg-purple-100"
-                >
-                  <DashboardIcon />
-                  <P className="ml-3 whitespace-nowrap font-semibold text-purple-400">
-                    Dashboard
-                  </P>
-                </Link>
-              </li>
-              <P className="font-semibold">Datas</P>
-              {allowedRoutes.map((item, index) => (
-                <li key={index}>
-                  <Link
-                    href={item.path}
-                    className={
-                      (pathname.includes(item.path) ? "bg-purple-300 " : "") +
-                      "group flex items-center rounded p-2 text-base font-normal text-purple-400 transition-all hover:bg-purple-200"
-                    }
-                  >
-                    <div />
-                    <P className="ml-3 whitespace-nowrap font-semibold text-purple-400">
-                      {item.title}
-                    </P>
-                  </Link>
-                </li>
-              ))}
+              <P className="font-semibold">Manajer Menu</P>
+
               <Button
                 variant={"primary"}
-                onClick={() => signOut({ callbackUrl: "/", redirect: true })}
+                onClick={() =>
+                  signOut({ callbackUrl: "/auth/login", redirect: true })
+                }
                 className="w-full"
               >
                 Log Out

@@ -5,7 +5,7 @@ import {
   getServerSession as nextAuthGetServerSession,
 } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { createUser, findUser } from "../query/user.query";
+import { findUser } from "../query/user.query";
 import { compareHash } from "../lib/bcrypt";
 import type { DefaultJWT } from "next-auth/jwt";
 
@@ -41,8 +41,8 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        name: {
-          label: "Nama User",
+        username: {
+          label: "Username",
           type: "text",
           placeholder: "Jane Doe",
         },
@@ -54,7 +54,7 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials) {
         try {
-          const user = await findUser({ name: credentials?.name });
+          const user = await findUser({ username: credentials?.username });
           if (!user?.password) return null;
 
           const isPasswordCorrect = compareHash(
@@ -81,32 +81,27 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
-  pages: {
-    signIn: "/auth/login",
-    newUser: "/auth/register",
-    error: "/auth/login",
-  },
+  // pages: {
+  //   signIn: "/auth/login",
+  //   error: "/auth/login",
+  // },
   callbacks: {
     async redirect({ url, baseUrl }) {
       return url.startsWith("/") ? new URL(url, baseUrl).toString() : url;
     },
     async signIn({ user }) {
-      if (user.name) {
-        const userdb = await findUser({ name: user.name });
+      if (user.username) {
+        const userdb = await findUser({ username: user.username });
         if (!userdb) {
-          await createUser({
-            username: user.username,
-            name: user.name,
-            password: "",
-          });
+          return false;
         }
       }
 
       return true;
     },
     async jwt({ token, user }) {
-      if (user?.name) {
-        const userdb = await findUser({ name: user.name });
+      if (user?.username) {
+        const userdb = await findUser({ username: user.username });
         if (userdb) {
           token.id_user = userdb.id_user;
           token.role = userdb.role;
@@ -124,7 +119,7 @@ export const authOptions: AuthOptions = {
           session.user.id_user = userdb.id_user;
         } else {
           // Handle case where user is not found
-          session.user.role = "ADMIN"; // default role if not found
+          session.user.role = "KASIR"; // default role if not found
         }
       }
       return session;

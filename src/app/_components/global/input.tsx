@@ -29,8 +29,12 @@ export const TextField = forwardRef<HTMLInputElement, InputProps>(
           <label
             htmlFor={props.name}
             className={cn(
-              `first-letter:capitalize ${props.required ? "after:text-primary-500 after:content-['*']" : ""}`,
-              errorMessage ? "text-primary-400" : "",
+              `first-letter:capitalize ${
+                props.required
+                  ? "after:text-purple-500 after:content-['*']"
+                  : ""
+              }`,
+              errorMessage ? "text-purple-400" : ""
             )}
           >
             {label}
@@ -48,21 +52,21 @@ export const TextField = forwardRef<HTMLInputElement, InputProps>(
           )}
           <input
             className={cn(
-              "w-full rounded-full border border-neutral-400 px-[18px] py-[14px] text-black placeholder-neutral-500 outline-none transition-all duration-300 hover:border-black focus:border-none focus:outline-none focus:outline-primary-200",
+              "w-full rounded-full border border-neutral-400 px-[18px] py-[14px] text-black placeholder-neutral-500 outline-none transition-all duration-300 hover:border-black focus:border-none focus:outline-none focus:outline-purple-200",
               props.disabled ? "cursor-not-allowed" : "",
-              errorMessage ? "border-primary-400" : "",
+              errorMessage ? "border-purple-400" : ""
             )}
             ref={ref}
             {...props}
             type={showPassword ? "text" : props.type}
           />
           {errorMessage && (
-            <P className="mt-[6px] text-red-400">{errorMessage}</P>
+            <P className="mt-[6px] text-purple-400">{errorMessage}</P>
           )}
         </div>
       </div>
     );
-  },
+  }
 );
 
 TextField.displayName = "TextField";
@@ -101,7 +105,7 @@ export function SelectField({
         <label
           htmlFor={name}
           className={`first-letter:capitalize ${
-            required ? "after:text-red-500 after:content-['*']" : ""
+            required ? "after:text-purple-500 after:content-['*']" : ""
           }`}
         >
           {label}
@@ -138,7 +142,9 @@ export function SelectField({
           }),
         }}
       />
-      {errorMessage && <P className="mt-[6px] text-red-400">{errorMessage}</P>}
+      {errorMessage && (
+        <P className="mt-[6px] text-purple-400">{errorMessage}</P>
+      )}
     </div>
   );
 }
@@ -162,19 +168,26 @@ export function FileField({
   const { onChange } = register(name);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    onChange(e);
-    if (file) {
+    const files = e.target.files;
+    if (files?.length) {
+      const file = files[0];
       setFileName(file.name);
     }
   };
 
   const handleDrop = (e: DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
-    const file = e.dataTransfer.files?.[0];
-    onChange(e);
-    if (file) {
+    const files = e.dataTransfer.files;
+    if (files?.length) {
+      const file = files[0];
       setFileName(file.name);
+
+      onChange({
+        target: {
+          name,
+          files,
+        },
+      });
     }
   };
 
@@ -184,17 +197,26 @@ export function FileField({
 
   return (
     <div className="flex w-full flex-col items-center justify-center py-4">
-      <P className="mb-2 self-start text-black">{label}</P>
+      <P
+        className={`mb-2 self-start ${
+          errorMessage ? "text-primary-400" : "text-black"
+        }`}
+      >
+        {label}
+      </P>
       <label
         htmlFor={name}
-        className="relative w-full cursor-pointer rounded-lg border-2 border-dashed border-neutral-200 px-6 py-4 transition-all duration-300 hover:border-solid focus:outline-none"
+        className={cn(
+          "relative w-full cursor-pointer rounded-lg border-2 border-dashed px-6 py-4 transition-all duration-300 hover:border-solid focus:outline-none",
+          errorMessage ? "border-primary-400" : "border-neutral-200"
+        )}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
       >
         <div className="flex flex-col items-center justify-center space-y-2">
           <FiUpload className="h-12 w-12 text-gray-200" />
-          <span className="font-medium text-neutral-200">
-            {fileName ? fileName : "Drag & drop a file di sini atau klik"}
+          <span className="font-medium text-gray-400">
+            {fileName ? fileName : "Click here to upload"}
           </span>
         </div>
         <input

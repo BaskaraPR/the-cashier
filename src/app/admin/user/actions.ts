@@ -28,7 +28,7 @@ export async function upsertUser(
       if (!username || !name || !role || !password)
         return { success: false, message: "Bad request" };
 
-      const checknameExistence = await findUser({ name });
+      const checknameExistence = await findUser({ username });
       if (checknameExistence) return { success: false, message: "Forbidden" };
 
       await createUser({
